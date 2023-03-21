@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/kay0829/kay_project_vanilla/issues"
   },
-  "homepage": "https://github.com/kay0829/kay_project_vanilla#readme"
+  "homepage": "https://github.com/kay0829/kay_project_vanilla#readme",
+  "dependencies": {
+    "firebase": "^9.18.0"
+  }
 }
