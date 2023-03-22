@@ -5,4 +5,3 @@ const root = document.querySelector("#root");
 if (root) {
     render(root, Container)
 }
-
