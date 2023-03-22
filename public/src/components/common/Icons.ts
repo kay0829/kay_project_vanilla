@@ -1,21 +1,23 @@
-import { IIcons } from "../../types/components/icons";
+import { useState, useEvents } from "../../core/CustomReact";
+import { IIcons } from "../../../types/components/common/icons";
 
 function Icons () {
     /*
     * 기본 아이콘 정보
     */
-    let state = {
-        icons: [
-            { name: "인터넷", imgSrc: "./assets/icons/icon-internet.png", explanation: "인터넷 아이콘" },
-            { name: "문서", imgSrc: "./assets/icons/icon-file-document.png", explanation: "문서 아이콘" },
-            { name: "폴더", imgSrc: "./assets/icons/icon-folder.png", explanation: "폴더 아이콘" }
-        ]
-    }
+    const initialState = [
+        { name: "인터넷", imgSrc: "./assets/icons/icon-internet.png", explanation: "인터넷 아이콘" },
+        { name: "문서", imgSrc: "./assets/icons/icon-file-document.png", explanation: "문서 아이콘" },
+        { name: "폴더", imgSrc: "./assets/icons/icon-folder.png", explanation: "폴더 아이콘" }
+    ]
+
+    const [icons, setIcons] = useState(initialState);
+    const [btnClickCount, setBtnClickCount] = useState(0);
 
     /*
     * 이벤트 등록
     */
-    window.addEventListener('DOMContentLoaded', () => {
+    const iconClickEvent = () => {
         /*
         * 아이콘 클릭 이벤트 관련 메서드
         */
@@ -48,14 +50,27 @@ function Icons () {
                 outFocusIcons();
             })
         }
-    })
+
+        const addIconBtn = document.querySelector("#addIconBtn");
+        if (addIconBtn) {
+            addIconBtn.addEventListener('click', () => {
+                const newIconInfo = { name: "폴더", imgSrc: "./assets/icons/icon-folder.png", explanation: "폴더 아이콘" };
+                const newIconArr = [...icons, newIconInfo];
+                setIcons(newIconArr);
+
+                setBtnClickCount(btnClickCount + 1);
+            })
+        }
+    }
+    useEvents([iconClickEvent]);
+
 
     /*
     * 아이콘 컴포넌트 
     */
     const iconTemplate = (icon: IIcons, i: number) => {
-        return (
-            `<li
+        return (`
+            <li
                 class="default-icon"
                 draggable="true"
                 aria-label=${icon.explanation}
@@ -76,7 +91,8 @@ function Icons () {
             class="main-screen-container"
             aria-label="아이콘 리스트"
         >
-            ${state.icons.map((icon, i) => iconTemplate(icon, i))}
+            ${icons.map((icon: IIcons, i: number) => iconTemplate(icon, i)).join('')}
+            <button id="addIconBtn">추가</button>
         </ol>`
     )
 }
