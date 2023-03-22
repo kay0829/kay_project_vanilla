@@ -1,0 +1,29 @@
+/* icon */
+.default-icon {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: min-content;
+    padding: 2px;
+}
+
+.default-icon:hover {
+    border: 1px solid rgba(173, 216, 230, 0.5);
+    background-color: rgba(173, 216, 230, 0.1);
+}
+
+.default-icon.clicked {
+    border: 1px solid rgba(173, 216, 230, 1);
+    background-color: rgba(173, 216, 230, 0.4);
+}
+
+.default-icon > button > figure > img {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+}
+
+.default-icon > button > figcaption {
+    font-size: 14px;
+}

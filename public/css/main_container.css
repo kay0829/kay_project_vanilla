@@ -1,0 +1,17 @@
+/* main container */
+.container {
+    width: 100%;
+    height: 100vh;
+    background-image: url("../assets/main-background.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+.main-screen-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 80px);
+    grid-template-rows: repeat(auto-fill, 70px);
+    gap: 20px 1px;
+    height: 100%;
+    padding: 5px 5px;
+}
