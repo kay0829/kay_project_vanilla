@@ -1,4 +1,4 @@
-import { useState, useEvents } from "../../core/CustomReact";
+import { useEvents, useState, useEffect } from "../../core/CustomReact";
 import { IIcons } from "../../../types/components/common/icons";
 
 /*
@@ -16,6 +16,18 @@ function Icons () {
 
     const [icons, setIcons] = useState(initialState);
     const [btnClickCount, setBtnClickCount] = useState(0);
+
+    useEffect(() => {
+        console.log('hi~! I am mounted');
+    }, [])
+
+    useEffect(() => {
+        console.log('buttonClickCount changed to', btnClickCount);
+    }, [btnClickCount])
+
+    useEffect(() => {
+        console.log('new icon info', icons[icons.length - 1]);
+    }, [icons])
 
     /*
     * 이벤트 등록

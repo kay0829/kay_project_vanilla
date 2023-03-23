@@ -4,6 +4,7 @@
 function CustomReact () {
     const options = {
         curStateIdx: 0,
+        curEffectIdx: 0,
         renderCount: 0,
     }
 
@@ -13,6 +14,7 @@ function CustomReact () {
     let events: Array<Function> = [];
 
     const states: any[] = [];
+    const effectDependencies: any[] = [];
 
     /*
     * CustomReact hooks
@@ -68,22 +70,33 @@ function CustomReact () {
     * useEffect: dependency 배열의 값들에 변경이 생겼을 경우 callback을 실행하는 메서드
     */
     const useEffect = (callback: Function, dependencies: Array<any>) => {
-        const { curStateIdx } = options;
+        const { curEffectIdx } = options;
 
-        if (states.length === curStateIdx) {
-            states.push(curStateIdx);
-        }
-    
-        const state = states[curStateIdx];
-
-        const setState = (newState: any) => {
-            states[curStateIdx] = newState;
-            _render();
+        if (effectDependencies.length === curEffectIdx) {
+            effectDependencies.push(dependencies);
         }
 
-        options.curStateIdx += 1;
+        const dependency = effectDependencies[curEffectIdx];
 
-        return [ state, setState ];
+        // dependency가 없을 경우 callback 바로 실행 (mount 되었을 때 실행)
+        // ex. useEffect(() => {}, [])
+        let hasChanged = true;
+
+        if (dependency && dependencies.length !== 0) {
+            // Array.prototype.some: 판별 함수 적어도 하나라도 통과하는지 체크
+            // Object.is: 두 개의 파라미터가 동일한지 체크
+            // 즉, 기존 dependency와 새로 받은 dependency 사이에 차이가 하나라도 있는 경우 true를 반환
+            hasChanged = dependencies.some((v, i) => {
+                return !Object.is(v, dependency[i]);
+            })
+        }
+
+        if (hasChanged) {
+            effectDependencies[curEffectIdx] = dependencies;
+            callback();
+        }
+
+        options.curEffectIdx += 1;
     }
 
     /*
@@ -124,7 +137,10 @@ function CustomReact () {
         
         // 변수 초기화
         options.curStateIdx = 0;
-        console.log('_render currentStateIdx', options.curStateIdx);
+        console.log('_render curStateIdx', options.curStateIdx);
+
+        options.curEffectIdx = 0;
+        console.log('_render curEffectIdx', options.curEffectIdx);
 
         events = [];
 
@@ -133,11 +149,11 @@ function CustomReact () {
         console.log('_render renderCount', options.renderCount);
     });
 
-    return { useEvents, useState, render };
+    return { render, useEvents, useState, useEffect };
 }
 
 
-const { render, useEvents, useState,  } = CustomReact();
-export { render, useEvents, useState,  };
+const { render, useEvents, useState, useEffect } = CustomReact();
+export { render, useEvents, useState, useEffect };
 
 export default CustomReact;
