@@ -3,7 +3,7 @@
 */
 function CustomReact () {
     const options = {
-        currentStateIdx: 0,
+        curStateIdx: 0,
         renderCount: 0,
     }
 
@@ -45,20 +45,43 @@ function CustomReact () {
     * useState: state 관리하도록 도와주는 메서드
     */
     const useState = (initState: any) => {
-        const { currentStateIdx } = options;
+        const { curStateIdx } = options;
 
-        if (states.length === currentStateIdx) {
+        if (states.length === curStateIdx) {
             states.push(initState);
         }
     
-        const state = states[currentStateIdx];
+        const state = states[curStateIdx];
 
         const setState = (newState: any) => {
-            states[currentStateIdx] = newState;
+            states[curStateIdx] = newState;
             _render();
         }
 
-        options.currentStateIdx += 1;
+        options.curStateIdx += 1;
+
+        return [ state, setState ];
+    }
+
+    /* 
+    * CustomReact hooks 3. useEffect
+    * useEffect: dependency 배열의 값들에 변경이 생겼을 경우 callback을 실행하는 메서드
+    */
+    const useEffect = (callback: Function, dependencies: Array<any>) => {
+        const { curStateIdx } = options;
+
+        if (states.length === curStateIdx) {
+            states.push(curStateIdx);
+        }
+    
+        const state = states[curStateIdx];
+
+        const setState = (newState: any) => {
+            states[curStateIdx] = newState;
+            _render();
+        }
+
+        options.curStateIdx += 1;
 
         return [ state, setState ];
     }
@@ -100,8 +123,8 @@ function CustomReact () {
         registerEvents();
         
         // 변수 초기화
-        options.currentStateIdx = 0;
-        console.log('_render currentStateIdx', options.currentStateIdx);
+        options.curStateIdx = 0;
+        console.log('_render currentStateIdx', options.curStateIdx);
 
         events = [];
 
