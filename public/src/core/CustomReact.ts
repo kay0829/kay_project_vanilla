@@ -15,21 +15,33 @@ function CustomReact () {
     const states: any[] = [];
 
     /*
-    * CustomReact hooks 1. useEvents
+    * CustomReact hooks
+    * =========================================================================
+    * CustomReact hooks 1. render
+    * render: root가 되는 엘리먼트를 렌더링하는 메서드
+    */
+    const render = (rootEl: Element | any, rootComponentEl: Element | any) => {
+        if (rootEl) {
+            root = rootEl;
+        }
+
+        if (rootComponentEl) {
+            rootComponent = rootComponentEl;
+        }
+        
+        _render();
+    }
+
+    /*
+    * CustomReact hooks 2. useEvents
     * useEvents: 컴포넌트를 모두 렌더링한 후 이벤트를 등록할 수 있도록 도와주는 메서드
     */
     const useEvents = (eventFns: Array<Function>) => {
         events = [...events, ...eventFns];
     };
 
-    const registerEvents = () => {
-        if (events.length > 0) {
-            events.forEach((eventFn) => eventFn())
-        }
-    }
-
     /* 
-    * CustomReact hooks 2. useState
+    * CustomReact hooks 3. useState
     * useState: state 관리하도록 도와주는 메서드
     */
     const useState = (initState: any) => {
@@ -52,22 +64,8 @@ function CustomReact () {
     }
 
     /*
-    * CustomReact hooks 3. render
-    * render: root가 되는 엘리먼트를 렌더링하는 메서드
-    */
-    const render = (rootEl: Element | any, rootComponentEl: Element | any) => {
-        if (rootEl) {
-            root = rootEl;
-        }
-
-        if (rootComponentEl) {
-            rootComponent = rootComponentEl;
-        }
-        
-        _render();
-    }
-
-    /*
+    * CustomReact 내부 함수
+    * =========================================================================
     * debounceFrame: 1초당 디스플레이 주사율만큼 실행하게 하여 지나친 렌더링을 방지하기 위한 메서드
     */
     const debounceFrame = (callback: FrameRequestCallback) => {
@@ -78,6 +76,15 @@ function CustomReact () {
         }
     };
     
+    /*
+    * registerEvents: 이벤트 함수 등록을 위해 실행하는 메서드
+    */
+    const registerEvents = () => {
+        if (events.length > 0) {
+            events.forEach((eventFn) => eventFn())
+        }
+    }
+
     /*
     * _render: 실질적으로 리액트 내부에서 렌더링을 담당하는 메서드
     */
@@ -107,7 +114,7 @@ function CustomReact () {
 }
 
 
-const { useEvents, useState, render } = CustomReact();
-export { useEvents, useState, render };
+const { render, useEvents, useState,  } = CustomReact();
+export { render, useEvents, useState,  };
 
 export default CustomReact;
