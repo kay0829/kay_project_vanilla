@@ -1,6 +1,9 @@
 import { useState, useEvents } from "../../core/CustomReact";
 import { IIcons } from "../../../types/components/common/icons";
 
+/*
+* 아이콘 컴포넌트
+*/
 function Icons () {
     /*
     * 기본 아이콘 정보
@@ -89,7 +92,7 @@ function Icons () {
     return (
         `<ol
             class="main-screen-container"
-            aria-label="아이콘 리스트"
+            aria-label="바탕화면 및 아이콘 리스트"
         >
             ${icons.map((icon: IIcons, i: number) => iconTemplate(icon, i)).join('')}
             <button id="addIconBtn">추가</button>

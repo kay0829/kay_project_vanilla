@@ -1,3 +1,6 @@
+/*
+* 리액트 hooks 간단히 구현
+*/
 function CustomReact () {
     const options = {
         currentStateIdx: 0,
@@ -11,6 +14,10 @@ function CustomReact () {
 
     const states: any[] = [];
 
+    /*
+    * CustomReact hooks 1. useEvents
+    * useEvents: 컴포넌트를 모두 렌더링한 후 이벤트를 등록할 수 있도록 도와주는 메서드
+    */
     const useEvents = (eventFns: Array<Function>) => {
         events = [...events, ...eventFns];
     };
@@ -21,6 +28,10 @@ function CustomReact () {
         }
     }
 
+    /* 
+    * CustomReact hooks 2. useState
+    * useState: state 관리하도록 도와주는 메서드
+    */
     const useState = (initState: any) => {
         const { currentStateIdx } = options;
 
@@ -40,6 +51,10 @@ function CustomReact () {
         return [ state, setState ];
     }
 
+    /*
+    * CustomReact hooks 3. render
+    * render: root가 되는 엘리먼트를 렌더링하는 메서드
+    */
     const render = (rootEl: Element | any, rootComponentEl: Element | any) => {
         if (rootEl) {
             root = rootEl;
@@ -52,6 +67,9 @@ function CustomReact () {
         _render();
     }
 
+    /*
+    * debounceFrame: 1초당 디스플레이 주사율만큼 실행하게 하여 지나친 렌더링을 방지하기 위한 메서드
+    */
     const debounceFrame = (callback: FrameRequestCallback) => {
         let nextFrameCallback = -1;
         return () => {
@@ -60,19 +78,28 @@ function CustomReact () {
         }
     };
     
+    /*
+    * _render: 실질적으로 리액트 내부에서 렌더링을 담당하는 메서드
+    */
     const _render = debounceFrame(() => {
         if (!root || !rootComponent) {
             return;
         }
 
+        // 화면 렌더링
         root.innerHTML = rootComponent();
-        
-        options.currentStateIdx = 0;
-        options.renderCount += 1;
 
+        // 이벤트 등록
         registerEvents();
-
+        
+        // 변수 초기화
+        options.currentStateIdx = 0;
         console.log('_render currentStateIdx', options.currentStateIdx);
+
+        events = [];
+
+        // 렌더링 횟수 확인
+        options.renderCount += 1;
         console.log('_render renderCount', options.renderCount);
     });
 
