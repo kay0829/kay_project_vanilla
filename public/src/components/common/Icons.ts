@@ -82,8 +82,15 @@ function Icons () {
         }
 
         // 3. 아이콘 드래그 이벤트 (.default-icon dragstart -> document dragover & drop)
+        // TODO. 드래그 이미지 배경 제거
+        // TODO. 파일 아이콘이 폴더 위로 이동될 경우 폴더 안으로 이동되도록 수정
+        // TODO. 아이콘끼리 겹치지 않도록 수정
         iconArea.forEach((v) => {
             v.addEventListener('dragstart', (dragstartEvent) => {
+                if (dragstartEvent.dataTransfer) {
+                    dragstartEvent.dataTransfer.effectAllowed = "move";
+                }
+
                 const ONE_GRID_AREA_WIDTH = 80;
                 const ONE_GRID_AREA_HEIGHT = 100;
                 
