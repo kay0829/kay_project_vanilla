@@ -81,11 +81,51 @@ function Icons () {
             })
         }
 
+        // 3. 아이콘 드래그 이벤트 (.default-icon dragstart -> document dragover & drop)
+        iconArea.forEach((v) => {
+            v.addEventListener('dragstart', (dragstartEvent) => {
+                const ONE_GRID_AREA_WIDTH = 80;
+                const ONE_GRID_AREA_HEIGHT = 100;
+                
+                // 기존 아이콘 위치
+                const prevIconPos = [dragstartEvent.clientX, dragstartEvent.clientY];
 
+                // 기존 아이콘 그리드 column, row 시작점
+                const prevGridColumnStart = Number.parseInt(v.style.gridColumnStart);
+                const prevGridRowStart = Number.parseInt(v.style.gridRowStart);
+
+                const dragoverFn = (dragoverEvent: DragEvent) => {
+                    dragoverEvent.preventDefault();
+                }
+
+                document.addEventListener('dragover', dragoverFn);
+                
+                document.addEventListener('drop', (dropEvent) => {
+                    dropEvent.preventDefault();
+
+                    // 클릭(mousedown) 이벤트가 적용된 엘리먼트만 이동
+                    if (v.classList.value.includes('clicked')) {
+                        // 드래그가 끝난 후 아이콘 위치
+                        const curIconPos = [dropEvent.clientX, dropEvent.clientY];
+
+                        // 기존 아이콘 그리드 좌표에서 몇 만큼 움직였는지
+                        const movingCoordinatesX = Number.parseInt(((curIconPos[0] - prevIconPos[0]) / ONE_GRID_AREA_WIDTH).toFixed());
+                        const movingCoordinatesY = Number.parseInt(((curIconPos[1] - prevIconPos[1]) / ONE_GRID_AREA_HEIGHT).toFixed());
+                        
+                        // 드래그가 끝난 후 column, row 시작점
+                        const curGridColumnStart = prevGridColumnStart + movingCoordinatesX;
+                        const curGridRowStart = prevGridRowStart + movingCoordinatesY;
+
+                        v.style.gridColumnStart = `${curGridColumnStart}`;
+                        v.style.gridRowStart = `${curGridRowStart}`;
+
+                        document.removeEventListener('dragover', dragoverFn);
+                    }
+                })
             })
+        })
     }
     useEvents([iconClickEvent]);
-
 
     /*
     * 아이콘 컴포넌트 
@@ -95,12 +135,12 @@ function Icons () {
             <li
                 class="default-icon"
                 draggable="true"
-                aria-label=${icon.explanation}
-                style="grid-column: 1 / 1;grid-row: ${i + 1} / ${i + 2};"
+                aria-label="${icon.explanation}"
+                style="grid-column-start: 1;grid-row-start: ${i + 1};"
             >
                 <button>
                     <figure>
-                        <img src=${icon.imgSrc} draggable="false">
+                        <img src="${icon.imgSrc}" draggable="false">
                     </figure>
                     <figcaption
                         aria-label="${icon.name}"
