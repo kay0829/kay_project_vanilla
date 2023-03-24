@@ -1,4 +1,4 @@
-import { useEvents, useState, useEffect } from "../../core/CustomReact";
+import { useEvents, useState } from "../../core/CustomReact";
 import { IIcons } from "../../../types/components/common/icons";
 
 /*
@@ -15,19 +15,6 @@ function Icons () {
     ]
 
     const [icons, setIcons] = useState(initialState);
-    const [btnClickCount, setBtnClickCount] = useState(0);
-
-    useEffect(() => {
-        console.log('hi~! I am mounted');
-    }, [])
-
-    useEffect(() => {
-        console.log('buttonClickCount changed to', btnClickCount);
-    }, [btnClickCount])
-
-    useEffect(() => {
-        console.log('new icon info', icons[icons.length - 1]);
-    }, [icons])
 
     /*
     * 이벤트 등록
@@ -66,16 +53,8 @@ function Icons () {
             })
         }
 
-        const addIconBtn = document.querySelector("#addIconBtn");
-        if (addIconBtn) {
-            addIconBtn.addEventListener('click', () => {
-                const newIconInfo = { name: "폴더", imgSrc: "./assets/icons/icon-folder.png", explanation: "폴더 아이콘" };
-                const newIconArr = [...icons, newIconInfo];
-                setIcons(newIconArr);
 
-                setBtnClickCount(btnClickCount + 1);
             })
-        }
     }
     useEvents([iconClickEvent]);
 
@@ -107,7 +86,6 @@ function Icons () {
             aria-label="바탕화면 및 아이콘 리스트"
         >
             ${icons.map((icon: IIcons, i: number) => iconTemplate(icon, i)).join('')}
-            <button id="addIconBtn">추가</button>
         </ol>`
     )
 }
