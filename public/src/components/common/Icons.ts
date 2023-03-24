@@ -82,24 +82,31 @@ function Icons () {
         }
 
         // 3. 아이콘 드래그 이벤트 (.default-icon dragstart -> document dragover & drop)
-        // TODO. 드래그 이미지 배경 제거
         // TODO. 파일 아이콘이 폴더 위로 이동될 경우 폴더 안으로 이동되도록 수정
         // TODO. 아이콘끼리 겹치지 않도록 수정
         iconArea.forEach((v) => {
             v.addEventListener('dragstart', (dragstartEvent) => {
-                if (dragstartEvent.dataTransfer) {
-                    dragstartEvent.dataTransfer.effectAllowed = "move";
-                }
-
+                // 하나의 grid area의 가로/세로
                 const ONE_GRID_AREA_WIDTH = 80;
                 const ONE_GRID_AREA_HEIGHT = 100;
-                
-                // 기존 아이콘 위치
-                const prevIconPos = [dragstartEvent.clientX, dragstartEvent.clientY];
 
                 // 기존 아이콘 그리드 column, row 시작점
                 const prevGridColumnStart = Number.parseInt(v.style.gridColumnStart);
                 const prevGridRowStart = Number.parseInt(v.style.gridRowStart);
+
+                // 기존 아이콘 위치
+                const prevIconPos = [dragstartEvent.clientX, dragstartEvent.clientY];
+
+                const iconDiv = getDragIconEl(v);
+
+                let shiftX = dragstartEvent.clientX - v.getBoundingClientRect().left;
+                let shiftY = dragstartEvent.clientY - v.getBoundingClientRect().top;
+
+                dragstartEvent.dataTransfer?.setDragImage(iconDiv, shiftX, shiftY);
+
+                if (dragstartEvent.dataTransfer) {
+                    dragstartEvent.dataTransfer.effectAllowed = "move";
+                }
 
                 const dragoverFn = (dragoverEvent: DragEvent) => {
                     dragoverEvent.preventDefault();
@@ -127,12 +134,43 @@ function Icons () {
                         v.style.gridRowStart = `${curGridRowStart}`;
 
                         document.removeEventListener('dragover', dragoverFn);
+                        document.body.removeChild(iconDiv);
                     }
                 })
             })
         })
     }
     useEvents([iconClickEvent]);
+
+    /*
+    * 아이콘 드래그 할 때 이미지
+    */
+    const getDragIconEl = (v: Element) => {
+        const imgSrc = v.children[0].children[0].children[0].attributes[0].nodeValue || '';
+        const iconName = v.children[0].children[1].ariaLabel || v.children[0].children[1].innerHTML;
+        
+        const iconDiv = document.createElement('div');
+
+        iconDiv.classList.add("default-icon");
+        iconDiv.style.position = "absolute";
+        iconDiv.style.width = "80px";
+        iconDiv.innerHTML = getDragIconInnerElem(iconName, imgSrc);
+
+        document.body.appendChild(iconDiv);
+
+        return iconDiv;
+    }
+
+    const getDragIconInnerElem = (iconName: string, iconImageSrc: string) => {
+        return (`
+            <button>
+                <figure>
+                    <img src="${iconImageSrc}" draggable="false">
+                </figure>
+                <figcaption>${iconName}</figcaption>
+            </button>`
+        )
+    }
 
     /*
     * 아이콘 컴포넌트 
