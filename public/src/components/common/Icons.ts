@@ -1,5 +1,7 @@
 import { useEvents, useState } from "../../core/CustomReact";
 import { IIcons } from "../../../types/components/common/icons";
+import { ICONINFO } from "../../../constants/components/common/icon";
+import WindowModal from "./WindowModal";
 
 /*
 * 아이콘 컴포넌트
@@ -9,12 +11,13 @@ function Icons () {
     * 기본 아이콘 정보
     */
     const initialState = [
-        { name: "인터넷", imgSrc: "./assets/icons/icon-internet.png", explanation: "인터넷 아이콘" },
-        { name: "파일이름여덟글자", imgSrc: "./assets/icons/icon-file-document.png", explanation: "문서 아이콘" },
-        { name: "문서이름이아홉글자", imgSrc: "./assets/icons/icon-folder.png", explanation: "폴더 아이콘" }
+        { name: "인터넷 익스플로러", extenstion: ICONINFO.INTERNET.extenstion, type: ICONINFO.INTERNET.type, imgSrc: ICONINFO.INTERNET.imgSrc, explanation: ICONINFO.INTERNET.explanation },
+        { name: "내 문서", extension: ICONINFO.FOLDER.extenstion, type: ICONINFO.FOLDER.type, imgSrc: ICONINFO.FOLDER.imgSrc, explanation: ICONINFO.FOLDER.explanation },
+        { name: "파일.txt", extension: ICONINFO.TXT.extenstion, type: ICONINFO.TXT.type, imgSrc: ICONINFO.TXT.imgSrc, explanation: ICONINFO.TXT.explanation }
     ]
 
-    const [icons, setIcons] = useState(initialState);
+    const [icons, setIcons] = useState("Icons", initialState);
+    const [modals, setModals] = useState("Icons", []);
 
     /*
     * 이벤트 등록
@@ -28,9 +31,10 @@ function Icons () {
         /*
         * 아이콘 이름 관련 (이름이 길 경우 클릭 시에 풀네임)
         */
-        const abbreviateIconName = (v: Element) => {
+        const abbreviateIconName = (v: HTMLElement) => {
             const iconFigcaption = v.children[0].children[1];
-            const fullIconName = iconFigcaption.ariaLabel || iconFigcaption.innerHTML;
+
+            const fullIconName = v.dataset.iconName || iconFigcaption.innerHTML;
             const shortName = `${fullIconName.substring(0, 8)}...`;
 
             if (fullIconName.length > 8) {
@@ -38,9 +42,9 @@ function Icons () {
             }
         }
 
-        const showFullIconName = (v: Element) => {
+        const showFullIconName = (v: HTMLElement) => {
             const iconFigcaption = v.children[0].children[1];
-            const fullIconName = iconFigcaption.ariaLabel || iconFigcaption.innerHTML;
+            const fullIconName = v.dataset.iconName || iconFigcaption.innerHTML;
 
             if (fullIconName.length > 8) {
                 iconFigcaption.innerHTML = fullIconName;
@@ -74,9 +78,9 @@ function Icons () {
         })
 
         // 2. 아이콘 외부 화면 클릭했을 때
-        const container = document.querySelector(".main-screen-container");
+        const container = document.querySelector(".container");
         if (container) {
-            container.addEventListener('click', () => {
+            container.addEventListener('mousedown', () => {
                 outFocusIcons();
             })
         }
@@ -172,18 +176,25 @@ function Icons () {
     /*
     * 아이콘 드래그 할 때 이미지
     */
-    const getDragIconEl = (v: Element) => {
-        const imgSrc = v.children[0].children[0].children[0].attributes[0].nodeValue || '';
-        const iconName = v.children[0].children[1].ariaLabel || v.children[0].children[1].innerHTML;
+    const getDragIconEl = (v: HTMLElement) => {
+        const rootEl = document.querySelector("#root");
+
+        const iconImg = v.children[0].children[0].children[0].attributes[0];
+        const iconFigcaption = v.children[0].children[1];
+
+        const imgSrc = iconImg.nodeValue || '';
+        const name = v.dataset.iconName || iconFigcaption.innerHTML || '';
         
         const iconDiv = document.createElement('div');
 
         iconDiv.classList.add("default-icon");
         iconDiv.style.position = "absolute";
         iconDiv.style.width = "80px";
-        iconDiv.innerHTML = getDragIconInnerElem(iconName, imgSrc);
+        iconDiv.innerHTML = getDragIconInnerElem(name, imgSrc);
 
-        document.body.appendChild(iconDiv);
+        if (rootEl) {
+            rootEl.appendChild(iconDiv);
+        }
 
         return iconDiv;
     }
@@ -207,6 +218,8 @@ function Icons () {
             <li
                 class="default-icon"
                 draggable="true"
+                data-icon-name="${icon.name}"
+                aria-icon-explanation="${icon.explanation}"
                 aria-label="${icon.explanation}"
                 style="grid-column-start: 1;grid-row-start: ${i + 1};"
             >
@@ -214,9 +227,7 @@ function Icons () {
                     <figure>
                         <img src="${icon.imgSrc}" draggable="false">
                     </figure>
-                    <figcaption
-                        aria-label="${icon.name}"
-                    >
+                    <figcaption>
                         ${icon.name.substring(0, 8)}
                         ${icon.name.length > 8 ? '...' : ''}
                     </figcaption>
@@ -228,10 +239,11 @@ function Icons () {
     return (
         `<ol
             class="main-screen-container"
-            aria-label="바탕화면 및 아이콘 리스트"
+            aria-label="바탕화면"
         >
             ${icons.map((icon: IIcons, i: number) => iconTemplate(icon, i)).join('')}
-        </ol>`
+            <button id="addIconBtn">추가</button>
+        </ol>
         ${modals.map((modal: string) => modal).join('')}`
     )
 }
