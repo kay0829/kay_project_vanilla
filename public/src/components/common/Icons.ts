@@ -139,6 +139,33 @@ function Icons () {
                 })
             })
         })
+
+        // 4. 아이콘 더블클릭이벤트
+        iconArea.forEach((v) => {
+            v.addEventListener('dblclick', () => {
+                const iconImg = v.children[0].children[0].children[0].attributes[0];
+                const iconFigcaption = v.children[0].children[1];
+
+                const imgSrc = iconImg.nodeValue || '';
+                const name = v.dataset.iconName || iconFigcaption.innerHTML || '';
+                const explanation = v.dataset.iconExplanation || name;
+                const icon = {name, extension: "", type: "", imgSrc, explanation };
+
+                const windowModal = WindowModal({icon});
+
+                if (windowModal) {
+                    const prevModals = modals;
+                    const newModals = [...prevModals, windowModal];
+                    setModals(newModals);
+                }
+            })
+        })
+
+        const addIconBtn = document.querySelector("#addIconBtn");
+        addIconBtn?.addEventListener('click', () => {
+            const newIcon = { name: "파일.txt", extension: ICONINFO.TXT.extenstion, type: ICONINFO.TXT.type, imgSrc: ICONINFO.TXT.imgSrc, explanation: ICONINFO.TXT.explanation };
+            setIcons([...icons, newIcon]);
+        })
     }
     useEvents([iconClickEvent]);
 
@@ -205,6 +232,7 @@ function Icons () {
         >
             ${icons.map((icon: IIcons, i: number) => iconTemplate(icon, i)).join('')}
         </ol>`
+        ${modals.map((modal: string) => modal).join('')}`
     )
 }
 
