@@ -19,11 +19,11 @@
 }
 
 .default-icon > button > figure > img {
-    width: 60px;
-    height: 60px;
+    width: 58px;
+    height: 58px;
     object-fit: contain;
 }
 
 .default-icon > button > figcaption {
-    font-size: 14px;
+    font-size: 13px;
 }
