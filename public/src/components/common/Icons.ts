@@ -214,7 +214,7 @@ function Icons () {
                 type: ICONINFO.TXT.type,
                 imgSrc: ICONINFO.TXT.imgSrc,
                 explanation: ICONINFO.TXT.explanation,
-                style: {gridRowStart: 1, gridColumnStart: 3},
+                style: {gridRowStart: icons.length + 1, gridColumnStart: 1},
             };
             setIcons([...icons, newIcon]);
         })

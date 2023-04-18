@@ -12,35 +12,20 @@ function WindowModal ({icon, modalIdx, main, footer}: IWindowModal) {
     const [isOpen, setIsOpen] = useState("WindowModal", true);
     const [modalIndex, setModalIndex] = useState("WindowModal", modalIdx);
     
-    const [modalWidth, setModalWidth] = useState("WindowModal", 400);
-    const [modalHeight, setModalHeight] = useState("WindowModal", 300);
-    const [modalTranslatX, setModalTranslatX] = useState("WindowModal", 400);
-    const [modalTranslatY, setModalTranslatY] = useState("WindowModal", 400);
+    const [modalSize, setModalSize] = useState("WindowModal", { width: 400, height: 300 });
+    const [modalTranslate, setModalTranslate] = useState("WindowModal", { X: 400, Y: 400 });
 
     const [isFullSize, setIsFullSize] = useState("WindowModal", false);
 
-    // useEffect(() => {
-    //     const cssText = `width: ${modalWidth}px;height: ${modalHeight}px; transform: translate(${modalTranslatX}px, ${modalTranslatY}px)`;
-        
-    //     const windowModal = document.querySelector<HTMLElement>(`#window-modal-${modalIndex}`);
-    //     console.dir(windowModal);
+    useEffect(() => {
+        console.log("modalIdx", modalIdx);
+        const defaultTranslate = { X: modalTranslate.X + 20 * modalIdx, Y: modalTranslate.Y + 20 * modalIdx };
+        setModalTranslate(defaultTranslate);
+    }, [])
 
-    //     if (windowModal) {
-    //         console.log('cssText', cssText);
-    //         windowModal.style.cssText = cssText;
-    //     }
-    // }, [])
-
-    // useEffect(() => {
-    //     const cssText = `width: ${modalWidth}px;height: ${modalHeight}px; transform: translate(${modalTranslatX}px, ${modalTranslatY}px)`;
-
-    //     const windowModal = document.querySelector<HTMLElement>(`#window-modal-${modalIndex}`);
-    //     console.dir(windowModal);
-
-    //     if (windowModal) {
-    //         windowModal.style.cssText = cssText;
-    //     }
-    // }, [modalWidth, modalHeight, modalTranslatX, modalTranslatY])
+    useEffect(() => {
+        //
+    }, [modalSize.width, modalSize.height, modalTranslate.X, modalTranslate.Y])
 
     const modalCommonEvent = () => {
         const minimizeBtn = document.querySelector("#minimizeBtn");
@@ -77,7 +62,7 @@ function WindowModal ({icon, modalIdx, main, footer}: IWindowModal) {
             `<div
                 id="window-modal-${modalIndex}"
                 class="window-modal"
-                style="width: ${modalWidth}px; height: ${modalHeight}px; transform: translate(${modalTranslatX}px, ${modalTranslatY}px)"
+                style="width: ${modalSize.width}px; height: ${modalSize.height}px; transform: translate(${modalTranslate.X}px, ${modalTranslate.Y}px)"
             >
                 <header class="modal-header">
                     <div class="modal-header-left">
