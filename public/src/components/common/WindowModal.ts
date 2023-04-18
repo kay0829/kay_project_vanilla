@@ -3,12 +3,14 @@ import { IIcons } from "../../../types/components/common/icons";
 
 interface IWindowModal {
     icon: IIcons;
+    modalIdx: number;
     main?: Element;
     footer?: Element;
 }
 
-function WindowModal ({icon, main, footer}: IWindowModal) {
+function WindowModal ({icon, modalIdx, main, footer}: IWindowModal) {
     const [isOpen, setIsOpen] = useState("WindowModal", true);
+    const [modalIndex, setModalIndex] = useState("WindowModal", modalIdx);
     
     const [modalWidth, setModalWidth] = useState("WindowModal", 400);
     const [modalHeight, setModalHeight] = useState("WindowModal", 300);
@@ -17,28 +19,28 @@ function WindowModal ({icon, main, footer}: IWindowModal) {
 
     const [isFullSize, setIsFullSize] = useState("WindowModal", false);
 
-    useEffect(() => {
-        const cssText = `width: ${modalWidth}px;height: ${modalHeight}px; transform: translate(${modalTranslatX}px, ${modalTranslatY}px)`;
+    // useEffect(() => {
+    //     const cssText = `width: ${modalWidth}px;height: ${modalHeight}px; transform: translate(${modalTranslatX}px, ${modalTranslatY}px)`;
         
-        const windowModal = document.querySelector<HTMLElement>("#windowModal");
-        console.dir(windowModal);
+    //     const windowModal = document.querySelector<HTMLElement>(`#window-modal-${modalIndex}`);
+    //     console.dir(windowModal);
 
-        if (windowModal) {
-            console.log('cssText', cssText);
-            windowModal.style.cssText = cssText;
-        }
-    }, [])
+    //     if (windowModal) {
+    //         console.log('cssText', cssText);
+    //         windowModal.style.cssText = cssText;
+    //     }
+    // }, [])
 
-    useEffect(() => {
-        const cssText = `width: ${modalWidth}px;height: ${modalHeight}px; transform: translate(${modalTranslatX}px, ${modalTranslatY}px)`;
+    // useEffect(() => {
+    //     const cssText = `width: ${modalWidth}px;height: ${modalHeight}px; transform: translate(${modalTranslatX}px, ${modalTranslatY}px)`;
 
-        const windowModal = document.querySelector<HTMLElement>("#windowModal");
-        console.dir(windowModal);
+    //     const windowModal = document.querySelector<HTMLElement>(`#window-modal-${modalIndex}`);
+    //     console.dir(windowModal);
 
-        if (windowModal) {
-            windowModal.style.cssText = cssText;
-        }
-    }, [modalWidth, modalHeight, modalTranslatX, modalTranslatY])
+    //     if (windowModal) {
+    //         windowModal.style.cssText = cssText;
+    //     }
+    // }, [modalWidth, modalHeight, modalTranslatX, modalTranslatY])
 
     const modalCommonEvent = () => {
         const minimizeBtn = document.querySelector("#minimizeBtn");
@@ -47,19 +49,23 @@ function WindowModal ({icon, main, footer}: IWindowModal) {
         const closeBtn = document.querySelector("#closeBtn");
 
         if (maximizeBtn) {
-            maximizeBtn.addEventListener('click', () => {
+            maximizeBtn.addEventListener('click', (e) => {
+                e.preventDefault;
                 setIsFullSize(true);
             })
         }
 
         if (restoreDownBtn) {
-            restoreDownBtn.addEventListener('click', () => {
+            restoreDownBtn.addEventListener('click', (e) => {
+                e.preventDefault;
                 setIsFullSize(false);
             })
         }
 
         if (closeBtn) {
-            closeBtn.addEventListener('click', () => {
+            closeBtn.addEventListener('click', (e) => {
+                e.preventDefault;
+                console.log("close ModalIdx", modalIndex);
                 setIsOpen(false);
             })
         }
@@ -68,7 +74,11 @@ function WindowModal ({icon, main, footer}: IWindowModal) {
 
     const modalContent = () => {
         return (
-            `<div id="windowModal">
+            `<div
+                id="window-modal-${modalIndex}"
+                class="window-modal"
+                style="width: ${modalWidth}px; height: ${modalHeight}px; transform: translate(${modalTranslatX}px, ${modalTranslatY}px)"
+            >
                 <header class="modal-header">
                     <div class="modal-header-left">
                         <img src="${icon.imgSrc}" />

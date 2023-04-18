@@ -1,4 +1,4 @@
-#windowModal {
+.window-modal {
     display: grid;
     grid-template-columns: 1fr;
     grid-template-rows: 29px 1fr 29px;
@@ -20,7 +20,6 @@
     height: 29px;
     border-bottom: 1px solid black;
 }
-
 
 .modal-header-left {
     display: flex;
@@ -46,7 +45,6 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    width: 70px;
     height: 100%;
     padding: 0 4px;
 }

@@ -11,9 +11,33 @@ function Icons () {
     * 기본 아이콘 정보
     */
     const initialState = [
-        { name: "인터넷 익스플로러", extenstion: ICONINFO.INTERNET.extenstion, type: ICONINFO.INTERNET.type, imgSrc: ICONINFO.INTERNET.imgSrc, explanation: ICONINFO.INTERNET.explanation },
-        { name: "내 문서", extension: ICONINFO.FOLDER.extenstion, type: ICONINFO.FOLDER.type, imgSrc: ICONINFO.FOLDER.imgSrc, explanation: ICONINFO.FOLDER.explanation },
-        { name: "파일.txt", extension: ICONINFO.TXT.extenstion, type: ICONINFO.TXT.type, imgSrc: ICONINFO.TXT.imgSrc, explanation: ICONINFO.TXT.explanation }
+        {
+            idx: 0,
+            name: "인터넷 익스플로러",
+            extenstion: ICONINFO.INTERNET.extenstion,
+            type: ICONINFO.INTERNET.type,
+            imgSrc: ICONINFO.INTERNET.imgSrc,
+            explanation: ICONINFO.INTERNET.explanation,
+            style: { gridRowStart: 1, gridColumnStart: 1 },
+        },
+        { 
+            idx: 1,
+            name: "내 문서",
+            extension: ICONINFO.FOLDER.extenstion,
+            type: ICONINFO.FOLDER.type,
+            imgSrc: ICONINFO.FOLDER.imgSrc,
+            explanation: ICONINFO.FOLDER.explanation,
+            style: { gridRowStart: 2, gridColumnStart: 1 },
+        },
+        {
+            idx: 2,
+            name: "파일.txt",
+            extension: ICONINFO.TXT.extenstion,
+            type: ICONINFO.TXT.type,
+            imgSrc: ICONINFO.TXT.imgSrc,
+            explanation: ICONINFO.TXT.explanation,
+            style: { gridRowStart: 3, gridColumnStart: 1 },
+        },
     ]
 
     const [icons, setIcons] = useState("Icons", initialState);
@@ -90,6 +114,9 @@ function Icons () {
         // TODO. 아이콘끼리 겹치지 않도록 수정
         iconArea.forEach((v) => {
             v.addEventListener('dragstart', (dragstartEvent) => {
+                // 아이콘 index
+                const iconIdx = Number.parseInt(v.getAttribute("id")?.split("-")[1] || '0');
+
                 // 하나의 grid area의 가로/세로
                 const ONE_GRID_AREA_WIDTH = 80;
                 const ONE_GRID_AREA_HEIGHT = 100;
@@ -101,6 +128,7 @@ function Icons () {
                 // 기존 아이콘 위치
                 const prevIconPos = [dragstartEvent.clientX, dragstartEvent.clientY];
 
+                const rootEl = document.querySelector("#root") || document.body;
                 const iconDiv = getDragIconEl(v);
 
                 let shiftX = dragstartEvent.clientX - v.getBoundingClientRect().left;
@@ -131,14 +159,18 @@ function Icons () {
                         const movingCoordinatesY = Number.parseInt(((curIconPos[1] - prevIconPos[1]) / ONE_GRID_AREA_HEIGHT).toFixed());
                         
                         // 드래그가 끝난 후 column, row 시작점
-                        const curGridColumnStart = prevGridColumnStart + movingCoordinatesX;
-                        const curGridRowStart = prevGridRowStart + movingCoordinatesY;
+                        const gridColumnStart = prevGridColumnStart + movingCoordinatesX;
+                        const gridRowStart = prevGridRowStart + movingCoordinatesY;
 
-                        v.style.gridColumnStart = `${curGridColumnStart}`;
-                        v.style.gridRowStart = `${curGridRowStart}`;
+                        const style = { gridRowStart, gridColumnStart };
+
+                        const newIcons = [...icons];
+                        newIcons[iconIdx] = {...icons[iconIdx], style };
+                        setIcons(newIcons);
 
                         document.removeEventListener('dragover', dragoverFn);
-                        document.body.removeChild(iconDiv);
+
+                        rootEl.removeChild(iconDiv);
                     }
                 })
             })
@@ -147,18 +179,26 @@ function Icons () {
         // 4. 아이콘 더블클릭이벤트
         iconArea.forEach((v) => {
             v.addEventListener('dblclick', () => {
+                const prevModals = modals;
+                const modalIdx = prevModals.length;
+
                 const iconImg = v.children[0].children[0].children[0].attributes[0];
                 const iconFigcaption = v.children[0].children[1];
 
                 const imgSrc = iconImg.nodeValue || '';
                 const name = v.dataset.iconName || iconFigcaption.innerHTML || '';
                 const explanation = v.dataset.iconExplanation || name;
-                const icon = {name, extension: "", type: "", imgSrc, explanation };
+                const icon = {
+                    idx: Number.parseInt(v.getAttribute("id")?.split("-")[1] || '0'),
+                    name,
+                    imgSrc,
+                    explanation,
+                    style: { gridColumnStart: Number.parseInt(v.style.gridColumnStart), gridRowStart: Number.parseInt(v.style.gridRowStart) }
+                };
 
-                const windowModal = WindowModal({icon});
+                const windowModal = WindowModal({icon, modalIdx});
 
                 if (windowModal) {
-                    const prevModals = modals;
                     const newModals = [...prevModals, windowModal];
                     setModals(newModals);
                 }
@@ -167,7 +207,15 @@ function Icons () {
 
         const addIconBtn = document.querySelector("#addIconBtn");
         addIconBtn?.addEventListener('click', () => {
-            const newIcon = { name: "파일.txt", extension: ICONINFO.TXT.extenstion, type: ICONINFO.TXT.type, imgSrc: ICONINFO.TXT.imgSrc, explanation: ICONINFO.TXT.explanation };
+            const newIcon = {
+                idx: icons.length,
+                name: "파일.txt",
+                extension: ICONINFO.TXT.extenstion,
+                type: ICONINFO.TXT.type,
+                imgSrc: ICONINFO.TXT.imgSrc,
+                explanation: ICONINFO.TXT.explanation,
+                style: {gridRowStart: 1, gridColumnStart: 3},
+            };
             setIcons([...icons, newIcon]);
         })
     }
@@ -177,7 +225,7 @@ function Icons () {
     * 아이콘 드래그 할 때 이미지
     */
     const getDragIconEl = (v: HTMLElement) => {
-        const rootEl = document.querySelector("#root");
+        const rootEl = document.querySelector("#root") || document.body;
 
         const iconImg = v.children[0].children[0].children[0].attributes[0];
         const iconFigcaption = v.children[0].children[1];
@@ -192,9 +240,7 @@ function Icons () {
         iconDiv.style.width = "80px";
         iconDiv.innerHTML = getDragIconInnerElem(name, imgSrc);
 
-        if (rootEl) {
-            rootEl.appendChild(iconDiv);
-        }
+        rootEl.appendChild(iconDiv);
 
         return iconDiv;
     }
@@ -216,12 +262,13 @@ function Icons () {
     const iconTemplate = (icon: IIcons, i: number) => {
         return (`
             <li
+                id="icon-${icon.idx}"
                 class="default-icon"
                 draggable="true"
                 data-icon-name="${icon.name}"
                 aria-icon-explanation="${icon.explanation}"
                 aria-label="${icon.explanation}"
-                style="grid-column-start: 1;grid-row-start: ${i + 1};"
+                style="grid-column-start: ${icon.style.gridColumnStart};grid-row-start: ${icon.style.gridRowStart};"
             >
                 <button>
                     <figure>
