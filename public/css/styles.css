@@ -40,6 +40,14 @@ li {
     padding-left: 0;
     margin-left: 0;
 }
+
+/* custom */
+.stop-drag {
+    -webkit-user-select:none;
+    -moz-user-select:none;
+    -ms-user-select:none;
+    user-select:none
+}
   
 .sr-only {
     position: absolute;

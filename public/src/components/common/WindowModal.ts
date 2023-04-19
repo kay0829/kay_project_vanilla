@@ -64,7 +64,7 @@ function WindowModal ({icon, modalIdx, main, footer}: IWindowModal) {
                 class="window-modal"
                 style="width: ${modalSize.width}px; height: ${modalSize.height}px; transform: translate(${modalTranslate.X}px, ${modalTranslate.Y}px)"
             >
-                <header class="modal-header">
+                <header class="modal-header stop-drag">
                     <div class="modal-header-left">
                         <img src="${icon.imgSrc}" />
                     </div>
