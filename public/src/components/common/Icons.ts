@@ -1,46 +1,18 @@
 import { useEvents, useState } from "../../core/CustomReact";
+import { configureStore } from '@reduxjs/toolkit'
+
 import { IIcons } from "../../../types/components/common/icons";
-import { ICONINFO } from "../../../constants/components/common/icon";
+import { ICON_INFO, DEFAULT_ICON } from "../../../constants/components/common/icon";
 import WindowModal from "./WindowModal";
+import iconReducer from "../../reducer/icons/iconsReducer";
+import { focusIcon } from "../../reducer/icons/action";
 
 /*
 * 아이콘 컴포넌트
 */
 function Icons () {
-    /*
-    * 기본 아이콘 정보
-    */
-    const initialState = [
-        {
-            idx: 0,
-            name: "인터넷 익스플로러",
-            extenstion: ICONINFO.INTERNET.extenstion,
-            type: ICONINFO.INTERNET.type,
-            imgSrc: ICONINFO.INTERNET.imgSrc,
-            explanation: ICONINFO.INTERNET.explanation,
-            style: { gridRowStart: 1, gridColumnStart: 1 },
-        },
-        { 
-            idx: 1,
-            name: "내 문서",
-            extension: ICONINFO.FOLDER.extenstion,
-            type: ICONINFO.FOLDER.type,
-            imgSrc: ICONINFO.FOLDER.imgSrc,
-            explanation: ICONINFO.FOLDER.explanation,
-            style: { gridRowStart: 2, gridColumnStart: 1 },
-        },
-        {
-            idx: 2,
-            name: "파일.txt",
-            extension: ICONINFO.TXT.extenstion,
-            type: ICONINFO.TXT.type,
-            imgSrc: ICONINFO.TXT.imgSrc,
-            explanation: ICONINFO.TXT.explanation,
-            style: { gridRowStart: 3, gridColumnStart: 1 },
-        },
-    ]
-
-    const [icons, setIcons] = useState("Icons", initialState);
+    const store = configureStore({ reducer: iconReducer });
+    const [icons, setIcons] = useState("Icons", DEFAULT_ICON);
     const [modals, setModals] = useState("Icons", []);
 
     /*
@@ -95,6 +67,7 @@ function Icons () {
         iconArea.forEach((v) => {
             v.addEventListener('mousedown', (e) => {
                 e.stopPropagation();
+                store.dispatch(focusIcon(icons[0]));
                 outFocusIcons();
                 inFocusIcon(v);
                 showFullIconName(v);
@@ -106,6 +79,7 @@ function Icons () {
         if (container) {
             container.addEventListener('mousedown', () => {
                 outFocusIcons();
+                console.log("store.getState()", store.getState());
             })
         }
 
@@ -210,10 +184,10 @@ function Icons () {
             const newIcon = {
                 idx: icons.length,
                 name: "파일.txt",
-                extension: ICONINFO.TXT.extenstion,
-                type: ICONINFO.TXT.type,
-                imgSrc: ICONINFO.TXT.imgSrc,
-                explanation: ICONINFO.TXT.explanation,
+                extension: ICON_INFO.TXT.extenstion,
+                type: ICON_INFO.TXT.type,
+                imgSrc: ICON_INFO.TXT.imgSrc,
+                explanation: ICON_INFO.TXT.explanation,
                 style: {gridRowStart: icons.length + 1, gridColumnStart: 1},
             };
             setIcons([...icons, newIcon]);

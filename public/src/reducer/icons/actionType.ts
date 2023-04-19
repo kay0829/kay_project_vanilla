@@ -1,0 +1,1 @@
+export const FOCUS_ICON = 'ICON/FOCUS_ICON' as const;
