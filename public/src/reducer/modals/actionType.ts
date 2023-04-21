@@ -1,0 +1,1 @@
+export const ADD_MODAL = 'MODALS/ADD_MODAL' as const;
