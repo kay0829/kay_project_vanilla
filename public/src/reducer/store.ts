@@ -1,12 +1,18 @@
-import { combineReducers } from '@reduxjs/toolkit';
-import globalReducer from './global/reducer';
-import iconReducer from './icons/iconsReducer';
-import {CLEAR_ALL_STATE} from './global/actionType';
+import { combineReducers, configureStore } from '@reduxjs/toolkit';
+// import { composeWithDevTools } from 'redux-devtools-extension';
+import { _render } from '../core/CustomReact';
 
-export const combinedReducers = combineReducers({
+import globalReducer from './global/reducer';
+import modalsReducer from './modals/reducer';
+
+export const rootReducer = combineReducers({
     global: globalReducer,
-    icons: iconReducer,
+    modals: modalsReducer,
 })
 
-export default (state: any, action: any) =>
-  combinedReducers(action.type === CLEAR_ALL_STATE ? undefined : state, action);
+const store = configureStore({
+  reducer: rootReducer,
+  devTools: true,
+})
+
+export default store;
