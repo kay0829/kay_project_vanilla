@@ -1,10 +1,11 @@
 import Icons from "./components/common/Icons";
+import Nav from "./components/nav/Nav";
 
 function Container() {
     return (`
         <div class="container">
             ${Icons()}
-            <nav class="status-container" aria-label="하단 상태 창"></nav>
+            ${Nav()}
         </div>
     `)
 }
