@@ -8,8 +8,6 @@ function CustomReact () {
     const states = new Map();
     const curStatesIdx = new Map();
 
-    let events: Array<Function> = [];
-
     let mountEffects: Array<Function> = [];
 
     const effectDependencies: any[] = [];
@@ -42,8 +40,43 @@ function CustomReact () {
     * useEvents: 컴포넌트를 모두 렌더링한 후 이벤트를 등록할 수 있도록 도와주는 메서드
     */
     const useEvents = (eventFns: Array<Function>) => {
-        console.log('useEvents', eventFns);
-        events = [...events, ...eventFns];
+        useEffect(() => {
+            console.log("eventFns", eventFns);
+            eventFns.forEach((fn) => {
+                console.log("yahoo1", fn);
+                /* 
+                * el: 이벤트 함수를 붙이고 싶은 엘리먼트의 배열 혹은 단일 엘리먼트
+                * event: 이벤트 함수의 이벤트 종류
+                * callback: 이벤트 함수의 콜백 함수
+                * neededState: 이벤트 함수를 실행하면서 필요한 state
+                * setNeededState: 이벤트 함수를 실행하면서 바꾸고 싶은 state를 변화시키는 함수
+                */
+                const [el, event, callback, neededState, setNeededState] = fn();
+                console.log("yahoo2", el, event, callback, neededState, setNeededState);
+
+                if (Array.isArray(el)) {
+                    el.forEach((targetEl) => {
+                        targetEl.addEventListener(event, (e: Event) => callback(e, targetEl, neededState, setNeededState));
+                    })
+                    return;
+                }
+                el.addEventListener(event, (e: Event) => callback(e, el, neededState, setNeededState));
+            });
+
+            return () => {
+                eventFns.forEach((fn) => {
+                    const [el, event, callback, neededState, setNeededState] = fn();
+
+                    if (Array.isArray(el)) {
+                        el.forEach((targetEl) => {
+                            targetEl.removeEventListener(event, (e: Event) => callback(e, targetEl, neededState, setNeededState));
+                        })
+                        return;
+                    }
+                    el.removeEventListener(event, (e: Event) => callback(e, el, neededState, setNeededState));
+                });
+              };
+        }, []);
     };
     
     /**
@@ -133,16 +166,6 @@ function CustomReact () {
           nextFrameCallback = requestAnimationFrame(callback);
         }
     };
-    
-    /*
-    * registerEvents: 이벤트 함수 등록을 위해 실행하는 메서드
-    */
-    const registerEvents = () => {
-        if (events.length > 0) {
-            console.log('events', events);
-            events.forEach((eventFn) => eventFn());
-        }
-    }
 
     /*
     * executeMountEffects: mount 시 실행할 메서드들을 실행하는 메서드
@@ -165,8 +188,6 @@ function CustomReact () {
         // 화면 렌더링
         root.innerHTML = rootComponent();
 
-        // 이벤트 등록
-        registerEvents();
         // 마운트 시 실행시킬 콜백 함수 실행
         executeMountEffects();
         
@@ -184,7 +205,6 @@ function CustomReact () {
         options.curEffectIdx = 0;
         console.log('_render curEffectIdx', options.curEffectIdx);
 
-        events = [];
         mountEffects = [];
 
         // 렌더링 횟수 확인
