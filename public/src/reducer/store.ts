@@ -15,4 +15,6 @@ const store = configureStore({
   devTools: true,
 })
 
+store.subscribe(_render);
+
 export default store;

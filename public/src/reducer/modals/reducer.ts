@@ -16,7 +16,6 @@ const modalsReducer = createReducer(initialState, builder =>
     addModal,
     (state, action: PayloadAction<MODAL>) => {
       state.modals.push(action.payload);
-      _render();
     }
   )
 )
