@@ -13,7 +13,7 @@ function Nav() {
                 <p>시작</p>
             </button>
             <nav>
-                ${modalsState.modals.map((modal) => NavItem(modal.icon)).join('')}
+                ${modalsState.modals.map((modal) => NavItem(modal)).join('')}
             </nav>
             <div class="cur-time">
                 <p>오전 11:55</p>

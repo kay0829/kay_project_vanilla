@@ -1,4 +1,4 @@
-import { useEffect, useEvents, useState } from "../../core/CustomReact";
+import { useEvents, useState } from "../../core/CustomReact";
 
 import store from "../../reducer/store";
 import { addModal } from "../../reducer/modals/action";

@@ -172,7 +172,7 @@ export const iconDbClickCallback = (
     const windowModal = WindowModal({icon: dbclickedIcon[0], modalIdx});
 
     if (windowModal) {
-        const value = {icon: dbclickedIcon[0], content: windowModal};
+        const value = {icon: dbclickedIcon[0], content: windowModal, modalIdx, focused: true};
         addModals(value);
     }
 }
