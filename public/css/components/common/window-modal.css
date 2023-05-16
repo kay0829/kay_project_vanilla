@@ -69,8 +69,16 @@
     background-image: radial-gradient(#5F8EF4, #2F69F5, #266AF5, #1D6DF7);
 }
 
-#close-btn {
+.modal-header-right > .close-btn {
     background-image: radial-gradient(#EE886E, #EA7050, #E24F25, #E63103, #E45831);
+}
+
+.modal-header-right > button:hover {
+    background-image: radial-gradient(#1d60e6, #1361e8);
+}
+
+.modal-header-right > .close-btn:hover {
+    background-image: radial-gradient(#ef3102, #dc4e26);
 }
 
 .modal-main {
