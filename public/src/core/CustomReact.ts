@@ -40,10 +40,11 @@ function CustomReact () {
     * useEvents: 컴포넌트를 모두 렌더링한 후 이벤트를 등록할 수 있도록 도와주는 메서드
     */
     const useEvents = (eventFns: Array<Function>) => {
+        // console.log("eventFns1", eventFns);
         useEffect(() => {
-            console.log("eventFns", eventFns);
+            // console.log("eventFns2", eventFns);
             eventFns.forEach((fn) => {
-                console.log("yahoo1", fn);
+                // console.log("yahoo1", fn);
                 /* 
                 * el: 이벤트 함수를 붙이고 싶은 엘리먼트의 배열 혹은 단일 엘리먼트
                 * event: 이벤트 함수의 이벤트 종류
@@ -52,7 +53,7 @@ function CustomReact () {
                 * setNeededState: 이벤트 함수를 실행하면서 바꾸고 싶은 state를 변화시키는 함수
                 */
                 const [el, event, callback, neededState, setNeededState] = fn();
-                console.log("yahoo2", el, event, callback, neededState, setNeededState);
+                // console.log("yahoo2", el, event, callback, neededState, setNeededState);
 
                 if (Array.isArray(el)) {
                     el.forEach((targetEl) => {
@@ -118,6 +119,7 @@ function CustomReact () {
         // 1. dependency가 없을 경우 callback 바로 실행 (mount 되었을 때 실행)
         // ex. useEffect(() => {}, [])
         if (dependencies.length === 0) {
+            // console.log("mount callback", callback);
             mountEffects.push(callback);
 
             return;
