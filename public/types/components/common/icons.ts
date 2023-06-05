@@ -3,7 +3,7 @@ export interface IIcons {
     name: string;
     extension?: string;
     type?: string;
-    imgSrc: string;
+    imgSrc?: string;
     explanation: string;
-    style: { gridRowStart: number, gridColumnStart: number }
+    style: { gridRowStart: number, gridColumnStart: number, backgroundPosition: string }
 }

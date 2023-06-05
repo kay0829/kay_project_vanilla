@@ -18,10 +18,11 @@
     background-color: rgba(173, 216, 230, 0.4);
 }
 
-.default-icon > button > figure > img {
-    width: 58px;
-    height: 58px;
-    object-fit: contain;
+.default-icon > button > figure {
+    display: inline-block;
+    width: 48px;
+    height: 48px;
+    background-image: url("../../../assets/icons/windows-xp-icons-md.png");
 }
 
 .default-icon > button > figcaption {
